@@ -1,0 +1,101 @@
+.personnel-active-item
+{
+    text-align: center;
+}
+
+.personnel-active-col-head
+{
+    text-align: center;
+}
+
+.personnel-view-item
+{
+    text-align: center;
+}
+
+.shipment-view-item
+{
+    text-align: center;
+}
+
+.personnel-view-col-head
+{
+    text-align: center;
+}
+
+.shipment-view-col-head
+{
+    text-align: center;
+}
+
+.shipment-source-col-item
+{
+    white-space: pre;
+}
+
+.shipment-destination-col-item
+{
+    white-space: pre;
+}
+
+/*.manifest-brand-col-item
+{
+    background-color: lightblue;
+}
+
+.manifest-description-col-item
+{
+    background-color: chartreuse;
+}
+
+.manifest-cost-col-item
+{
+    background-color: aqua;
+}
+
+.manifest-quantity-col-item
+{
+    background-color: red;
+}*/
+
+@media not print
+{
+    .shipment-table
+    {
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+    }
+
+    .shipment-table > table
+    {
+        min-width: 700px;
+    }
+
+    .manifest-table
+    {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+    }
+
+    .manifest-table > table
+    {
+        min-width: 700px;
+    }
+
+    .po-table
+    {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+    }
+
+    .po-table > table
+    {
+        min-width: 700px;
+    }
+}
+
+@media print
+{
+
+}

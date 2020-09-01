@@ -1,0 +1,30 @@
+.gridform-button
+{
+    width: 100%;
+    height: 100%;
+}
+
+.grid-form legend
+{
+    margin-bottom: 0;
+}
+
+.setpasswordplain
+{
+    width: 100%;
+}
+
+.setpasswordplain input
+{
+    font-size: 1em;
+    font-weight: 300;
+    color: #888;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    padding: 0.25em 10px;
+    line-height: 1.5em;
+}
+textarea
+{
+    height: 8em;
+}

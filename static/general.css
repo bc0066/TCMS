@@ -1,0 +1,38 @@
+body
+{
+}
+
+.navbar
+{
+    border: none;
+    padding: 0 0 0 0;
+    \\background-color: aqua !important;
+}
+
+.navbar-brand img
+{
+    height: 60px;
+}
+
+.navbar-brand span
+{
+    font-size: 1.5rem;
+}
+
+.right-logo
+{
+    background-color: white;
+    margin-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.nounderline
+{
+    text-decoration: none !important
+}
+
+.nounderline a:hover
+{
+    text-decoration: none !important
+}
