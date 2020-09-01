@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Payroll Report{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='gridforms/gridforms.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.css"
+          integrity="sha256-tUFg4y6qj4WTN1LzL83dCuIJwr/+Vhph/nf82gD/X2w=" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='hsimp.css') }}">
+{% endblock styles %}
+{% block scripts %}
+    {{ super() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.min.js"
+            integrity="sha256-44TeE1bzEP4BfpL6Wb05CVgLDKN6OzOAI79XNMPR4Bs=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename="gridforms/gridforms.js") }}"></script>
+    <script>
+        const start_date = flatpickr("#start_date", {
+            enableTime: false,
+            time_24hr: false
+        });
+        const end_date = flatpickr("#end_date", {
+            enableTime: false,
+            time_24hr: false
+        });
+    </script>
+{% endblock scripts %}
+
+{% block page_content %}
+	<div>
+		<br>
+	</div>
+    <div class="container">
+        <form action="" method="POST" class="grid-form">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <legend>GENERATE PAYROLL REPORT</legend>
+                <div data-row-span="3">
+                    <div data-field-span="1">
+                        <label>Start Date for Report</label>
+                        {{ form.start_date() }}
+                    </div>
+                    <div data-field-span="1">
+                        <label>End Date for Report</label>
+                        {{ form.end_date() }}
+                    </div>
+                    <div data-field-span="1">
+                    	<button type="submit" class="btn gridform-button">Generate Report</button>
+                	</div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+{% endblock page_content %}

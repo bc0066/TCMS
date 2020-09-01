@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}My Shipments{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='table.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.css"
+          integrity="sha256-tUFg4y6qj4WTN1LzL83dCuIJwr/+Vhph/nf82gD/X2w=" crossorigin="anonymous">
+{% endblock styles %}
+
+{% block page_content %}
+    <div class="container-fluid">
+        <p class="h1 mt-3">My Shipments</p>
+        <p class="h2 mt-3"><b>Driver:</b> {{ current_user.last_name }}, {{ current_user.first_name }}</p>
+    </div>
+    <div class="container-fluid">
+        <a class="btn btn-secondary text-light d-print-none d-block d-lg-none mb-3"
+           href="{{ url_for('createshipment') }}">New Shipment</a>
+        <div class="bg-light mb-3 d-print-none">
+            <a class="btn btn-secondary float-right text-light d-none d-xl-block"
+               href="{{ url_for('createshipment') }}">New Shipment</a>
+            <a class="btn btn-secondary float-right text-light d-none d-lg-block d-xl-none"
+               href="{{ url_for('createshipment') }}">&#43;</a>
+            <form action="" class="form-inline text">
+            <form class="form-inline text">
+                <label class="ml-1 h5 mr-1">FILTERS:</label>
+                <div class="form-group">
+                    <label class="ml-1 mr-1">Type</label>
+                    {{ form.filter(class_="form-control mr-2") }}
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-secondary text-light d-sm-block">
+                        Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="container-fluid shipment-table">
+        {{ shipmenttable|safe }}
+    </div>
+{% endblock page_content %}
+{% block scripts %}
+    {{ super() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.min.js"
+            integrity="sha256-44TeE1bzEP4BfpL6Wb05CVgLDKN6OzOAI79XNMPR4Bs=" crossorigin="anonymous"></script>
+    <script>
+        const daterange = flatpickr("#date_range", {
+            mode: "range",
+            onChange: function (dateStr, selectedDates) {
+                var dateArr = [];
+                if (selectedDates.includes(" to ")) {
+                    dateArr = selectedDates.split(" to ", 2);
+                } else {
+                    dateArr = [selectedDates, selectedDates];
+                }
+                $("#range_start").val(dateArr[0]);
+                $("#range_end").val(dateArr[1]);
+            }
+        });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+{% endblock scripts %}

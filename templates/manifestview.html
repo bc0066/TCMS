@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+{% block title %}Manifest - Shipment {{ shipment.padded_id }}{% endblock title %}
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='gridforms/gridforms.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='table.css') }}" rel="stylesheet">
+{% endblock styles %}
+
+{% block page_content %}
+    <div class="container-fluid">
+        <p class="h1 d-print-none mt-3">Shipments</p>
+    </div>
+    <div class="modal fade" id="confirmPaymentModal" tabindex="-1" role="dialog"
+         aria-labelledby="Payment Confirmation" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Payment Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Do you want to
+                        {% if shipment.payment_status %}
+                            cancel payment
+                        {% else %}
+                            confirm that the payment was received?
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal" araia-label="close">No</button>
+                    <button type="button" class="btn btn-warning" id="togglePaymentStatus">
+                        {% if shipment.payment_status %}
+                            Cancel Payment
+                        {% else %}
+                            Confirm Payment
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <form class="grid-form">
+            <fieldset>
+                <legend>SHIPMENT RECORD</legend>
+                <div data-row-span="3">
+                    <div data-field-span="1">
+                        <label>Shipment ID</label>
+                        <input type="text" disabled value="&#8470; {{ shipment.padded_id }}">
+                    </div>
+                    <div data-field-span="1">
+                        <label>Shipment Type</label>
+                        <input type="text" disabled
+                               value="{% if shipment.shipment_type %}Outgoing ↗{% else %}Incoming ↙{% endif %}">
+                    </div>
+                    <div data-field-span="1">
+                        <label>Shipment Status</label>
+                        <input type="text" disabled
+                               {% if shipment.arrival_status %}value="Confirmed: {{ shipment.friendly_confirmation }}"
+                               {% else %}value="In Transit"{% endif %}>
+                    </div>
+                </div>
+                <fieldset>
+                    <legend>SOURCE/DESTINATION</legend>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label>SOURCE (DEPARTURE: {{ shipment.friendly_departure }})</label>
+                            {{ shipment.source_company }} ({{ shipment.source_address }})
+                        </div>
+                    </div>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label>DESTINATION (ESTIMATED ARRIVAL: {{ shipment.friendly_arrival }})</label>
+                            {{ shipment.destination_company }} ({{ shipment.destination_address }})
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>MANIFEST</legend>
+                </fieldset>
+            </fieldset>
+        </form>
+    </div>
+
+    <div id="manifest" class="container-fluid manifest-table mt-1">
+        {{ manifest_table|safe }}
+    </div>
+    <div class="container-fluid mb-5 d-print-none">
+        <button type="button" id="new_item" class="ml-2 btn btn-primary float-right">New Item</button>
+        <button type="button" id="refresh" class="btn btn-secondary float-right">Refresh</button>
+    </div>
+
+    <div class="container-fluid mb-5">
+        <form action="" method="post" class="grid-form" id="totalsForm">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <fieldset>
+                    <legend>SHIPMENT TOTALS</legend>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label class="float-right">SUBTOTAL</label>
+                            <input type="text" id="subtotal" disabled class="float-right text-right"
+                                   value="{{ manifest.subtotal }}">
+                        </div>
+                    </div>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label class="float-right">SHIPPING AND HANDLING</label>
+                            <input type="text" class="text-right" id="s-h">
+                            {{ form.shipping_and_handling(class_="d-none") }}
+                        </div>
+                    </div>
+                </fieldset>
+
+            </fieldset>
+            <fieldset>
+                <legend class="text-right">TOTAL</legend>
+                <div data-row-span="5">
+                    <div data-field-span="4" class="text-right">
+                        TOTAL COST INCLUDING SHIPPING AND HANDLING
+                    </div>
+                    <div data-field-span="1">
+                        <input id="total" disabled type="text" class="text-right font-weight-bold"
+                               value="">
+                    </div>
+                </div>
+                <div data-row-span="4">
+                    <div data-field-span="1">
+                        <button type="button" class="btn btn-secondary gridform-button d-print-none" id="payment"
+                                data-toggle="modal" data-target="#confirmPaymentModal">
+                            {% if shipment.payment_status %}
+                                CANCEL PAYMENT
+                            {% else %}
+                                CONFIRM PAYMENT
+                            {% endif %}
+                        </button>
+                    </div>
+                    <div data-field-span="3" class="text-right">
+                        <label>Payment Status</label>
+                        {% if shipment.payment_status %}
+                            <span class="h3">PAYMENT RECEIVED</span>
+                        {% else %}
+                            <span class="h6">PENDING</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+{% endblock page_content %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename="gridforms/gridforms.js") }}"></script>
+    <script src="{{ url_for('static', filename="jquery.tabledit.min.js") }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/accounting@0.4.1/accounting.min.js"
+            integrity="sha256-wLefPvftUZaYEQquDfRpnXG8nkR2o9vutAcDLNe64R0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-form@4.2.2/dist/jquery.form.min.js"
+            integrity="sha256-2Pjr1OlpZMY6qesJM68t2v39t+lMLvxwpa8QlRjJroA=" crossorigin="anonymous"></script>
+    <script>
+        function tabulateCostAndFormat() {
+            var $tblrows = $("#manifest_table tbody tr");
+            var subTotal = 0;
+            $tblrows.each(function (index) {
+                var $tblrow = $(this);
+                var qty = $tblrow.find("[name=quantity]").val();
+                var cost = accounting.unformat($tblrow.find("[name=cost]").val());
+                var fcost = accounting.formatMoney(cost);
+                $tblrow.find(".manifest-cost-col-item span").html(fcost);
+                var rowSub = qty * cost;
+                subTotal += rowSub;
+                var frowSub = accounting.formatMoney(rowSub);
+                $tblrow.find(".manifest-total-col-item").html(frowSub);
+            });
+            var fsubTotal = accounting.formatMoney(subTotal);
+            $("#subtotal").val(fsubTotal);
+            var total = subTotal + accounting.unformat($("#s-h").val());
+            $("#total").val(accounting.formatMoney(total));
+        }
+
+        function tableedit() {
+            $('#manifest_table').Tabledit({
+                columns: {
+                    identifier: [0, 'id'],
+                    editable: [[1, 'brand'], [2, 'description'], [3, 'cost'], [4, 'quantity']]
+                },
+                hideIdentifier: true,
+                mutedClass: 'd-none',
+                restoreButton: false,
+                buttons: {
+                    delete: {
+                        class: 'btn btn-sm btn-danger gridform-button d-print-none',
+                        html: 'DELETE',
+                        action: 'delete'
+                    },
+                    edit: {
+                        class: 'btn btn-sm btn-default gridform-button d-print-none',
+                        html: 'EDIT'
+                    },
+                    save: {
+                        class: 'btn btn-sm btn-success gridform-button',
+                        html: 'SAVE'
+                    },
+                    confirm: {
+                        class: 'btn btn-sm btn-danger gridform-button',
+                        html: 'CONFIRM'
+                    }
+                },
+                onSuccess: function (data, textStatus, jqXHR) {
+                    if (data.action == 'delete') {
+                        var del = "#" + data.id;
+                        $(del).remove();
+                    }
+                    tabulateCostAndFormat();
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            {% if manifest.items %}
+                tableedit();
+                tabulateCostAndFormat();
+            {% endif %}
+            const url = window.location.href;
+            const refresh_url = url + '?action=refresh';
+            $("#new_item").click(function () {
+                $.post(window.location.href, 'action=new', function () {
+                    $.get(refresh_url, function (data) {
+                        $("#manifest").html(data);
+                        tableedit();
+                        tabulateCostAndFormat();
+                    })
+                });
+            });
+            $("#refresh").click(function () {
+                $.get(refresh_url, function (data) {
+                    $("#manifest").html(data);
+                    tableedit();
+                    tabulateCostAndFormat();
+                })
+            });
+            const shURL = url + '?action=sh';
+            $("#s-h").change(function () {
+                var sAndH = accounting.unformat($("#s-h").val());
+                $("#shipping_and_handling").val(sAndH);
+                $("#s-h").val(accounting.formatMoney(sAndH));
+                var form = $("#totalsForm").ajaxSubmit({url: window.location.href, type: 'post'});
+                var xhr = form.data('jqxhr');
+                xhr.done(function () {
+                    $.get(shURL, function (data) {
+                        $("#total").val(accounting.formatMoney(data));
+                    })
+                })
+            });
+            $("#total").val(accounting.formatMoney({{ manifest.total }}));
+            $("#s-h").val(accounting.formatMoney(
+                {% if manifest.shipping_handling %}
+                    {{ manifest.shipping_handling }}
+                {% else %}
+                    0
+                {% endif %}
+            ));
+            $("#togglePaymentStatus").click(function () {
+                $.post(window.location.href, 'action=togglePayment', function () {
+                    location.reload(true);
+                })
+            })
+        });
+    </script>
+{% endblock scripts %}

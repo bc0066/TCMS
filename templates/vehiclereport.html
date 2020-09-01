@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Vehicle Maintentance Report{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='table.css') }}" rel="stylesheet">
+{% endblock styles %}
+
+{% block page_content %}
+	<div class="container-fluid">
+        <p class="h1 mt-3">Vehicle Maintenance Report</p>
+    </div>
+    <div>
+    	<table class="table">
+    		<thead>
+    			<th>Vehicle ID</th>
+    			<th>Make</th>
+    			<th>Model</th>
+    			<th>Year</th>
+    			<th>Vehicle Type</th>
+    			<th>Active</th>
+    			<th>Maintenance Report</th>
+    		</thead>
+    		<tbody>
+    			{% for vehicle in vehicles %}
+                <tr>
+    				<td>{{ vehicle.vehicle_id }}</td>
+    				<td>{{ vehicle.make }}</td>
+    				<td>{{ vehicle.model }}</td>
+                    <td>{{ vehicle.year }}</td>
+    				<td>{{ vehicle.vehicle_type }}</td>
+    				<td>{{ vehicle.active }}</td>
+    				<td>
+						<form method="get" action="{{ url_for('generatevehiclereport', vehicle_id=vehicle.vehicle_id) }}">
+							<button>Generate Maintenance Report</button>
+						</form>
+					</td>
+                </tr>
+				{% endfor %}
+	</div>
+{% endblock page_content %}

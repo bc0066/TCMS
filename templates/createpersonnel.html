@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Personnel - Create{% endblock title %}
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='gridforms/gridforms.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.css"
+          integrity="sha256-tUFg4y6qj4WTN1LzL83dCuIJwr/+Vhph/nf82gD/X2w=" crossorigin="anonymous">
+{% endblock styles %}
+
+
+{% block page_content %}
+    <div class="container">
+        <p class="h1 d-print-none mt-3">Personnel</p>
+    </div>
+    <div class="container">
+        <form action="" method="POST" class="grid-form">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <legend>NEW PERSONNEL RECORD</legend>
+                <fieldset>
+                    <legend>NAME</legend>
+                    <div data-row-span="3">
+                        <div data-field-span="1">
+                            <label>First Name</label>
+                            {{ form.first_name() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>Middle Name</label>
+                            {{ form.middle_name() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>Last Name</label>
+                            {{ form.last_name() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>EMPLOYEE RECORD</legend>
+                    <div data-row-span="2">
+                        <div data-field-span="1">
+                            <label>Job Title</label>
+                            {{ form.position() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>Employee Classification</label>
+                            <!--<select name="employee-classification" form="personnelform">
+                                <option value="back-office">Back Office</option>
+                                <option value="shipping-manager">Shipping Manager</option>
+                                <option value="maintenance-worker">Maintenance</option>
+                                <option value="driver">Driver</option>
+                            </select>-->
+                            {{ form.category() }}
+                        </div>
+                    </div>
+                    <div data-row-span="4">
+                        <div data-field-span="1">
+                            <label>Start Date</label>
+                            {{ form.start_date() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>End Date</label>
+                            {{ form.end_date(data_toggle="tooltip", title="Click to clear") }}
+                        </div>
+                        <!--
+                        <div data-field-span="1">
+                            <label>Years with Company</label>
+                            <input type="text" name="years" disabled>
+                        </div>
+                        -->
+                        <div data-field-span="2">
+                            <label>Salary (in USD)</label>
+                            {{ form.rate() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>CONTACT INFORMATION</legend>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label>Address</label>
+                            {{ form.address() }}
+                        </div>
+                    </div>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label>Telephone</label>
+                            {{ form.phone() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>ACCOUNT</legend>
+                    <div data-row-span="3">
+                        <div data-field-span="1">
+                            <label>Account Status</label>
+                            <!--<select name="account-status" form="personnelform">
+                                <option value="active">Active</option>
+                                <option value="disabled">Disabled</option>
+                            </select>-->
+                            <input value="Active" type="text" id="accountstatus" disabled>
+                        </div>
+                        <div data-field-span="1">
+                            <label>Password</label>
+                            {{ form.password_plain() }}
+                        </div>
+                        <div data-field-span="1">
+                            <button type="submit" class="gridform-button btn btn-primary">SAVE</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </fieldset>
+        </form>
+    </div>
+{% endblock page_content %}
+{% block scripts %}
+    {{ super() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.min.js"
+            integrity="sha256-44TeE1bzEP4BfpL6Wb05CVgLDKN6OzOAI79XNMPR4Bs=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename="gridforms/gridforms.js") }}"></script>
+    <script>
+        const startdate = flatpickr("#start_date", {
+            onChange: function (selectedDates, dateStr, instance) {
+                enddate.set('minDate', dateStr);
+            }
+        });
+        const enddate = flatpickr("#end_date", {
+            onClose: function (selectedDates) {
+                if (selectedDates == null) {
+                    enddate.clear();
+                }
+            },
+            onChange: function (selectedDates, dateStr, instance) {
+                if (selectedDates != null) {
+                    $("#accountstatus").val("Disabled");
+                }
+            }
+        });
+        $("#end_date").click(function () {
+            enddate.clear()
+            $("#accountstatus").val("Active");
+        });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+{% endblock scripts %}
+
+
+

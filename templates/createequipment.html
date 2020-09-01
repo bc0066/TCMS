@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Equipment - Create{% endblock title %}
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='gridforms/gridforms.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.css"
+          integrity="sha256-tUFg4y6qj4WTN1LzL83dCuIJwr/+Vhph/nf82gD/X2w=" crossorigin="anonymous">
+{% endblock styles %}
+
+
+{% block page_content %}
+    <div class="container">
+        <p class="h1 d-print-none mt-3">Equipment</p>
+    </div>
+    <div class="container">
+        <form action="" method="POST" class="grid-form">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <fieldset>
+                    <legend>NEW EQUIPMENT RECORD</legend>
+                    <div data-row-span="2">
+                        <div data-field-span="1">
+                            <label>VIN</label>
+                            {{ form.vin() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>Type</label>
+                            {{ form.vehicle_type() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div data-row-span="5">
+                        <div data-field-span="2">
+                            <label>Make</label>
+                            {{ form.make() }}
+                        </div>
+                        <div data-field-span="2">
+                            <label>Model</label>
+                            {{ form.model() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>Year</label>
+                            {{ form.year() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div data-row-span="2">
+                        <div data-field-span="1">
+                            <label>Active</label>
+                            {{ form.active }}
+                        </div>
+                        <div data-field-span="1">
+                            <button type="submit" class="gridform-button btn btn-primary">SAVE</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </fieldset>
+        </form>
+    </div>
+{% endblock page_content %}
+
+
+

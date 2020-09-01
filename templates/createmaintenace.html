@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Maintenance - {{ vehicle.padded_id }} - Create Record{% endblock title %}
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='gridforms/gridforms.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.css"
+          integrity="sha256-tUFg4y6qj4WTN1LzL83dCuIJwr/+Vhph/nf82gD/X2w=" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='hsimp.css') }}">
+{% endblock styles %}
+{% block page_content %}
+    <div class="container">
+        <p class="h1 d-print-none mt-3">Maintenance
+            <small class="h3 text-muted">/ Equipment</small>
+        </p>
+    </div>
+    <div class="container">
+        <form action="" method="POST" class="grid-form">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <legend>NEW MAINTENANCE RECORD</legend>
+                <fieldset>
+                    <legend>VEHICLE</legend>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label>Vehicle &#8470;</label>
+                            <input type="text" disabled value="&#8470; {{ vehicle.padded_id }}">
+                        </div>
+                    </div>
+                    <div data-row-span="2">
+                        <div data-field-span="1">
+                            <label>VIN</label>
+                            <input type="text" disabled value="{{ vehicle.vin }}">
+
+                        </div>
+                        <div data-field-span="1">
+                            <label>TYPE</label>
+                            <input type="text" disabled value="{{ vehicle.vehicle_type }}">
+                        </div>
+                    </div>
+                    <div data-row-span="5">
+                        <div data-field-span="2">
+                            <label>Make</label>
+                            <input type="text" disabled value="{{ vehicle.make }}">
+                        </div>
+                        <div data-field-span="2">
+                            <label>Model</label>
+                            <input type="text" disabled value="{{ vehicle.model }}">
+                        </div>
+                        <div data-field-span="1">
+                            <label>Year</label>
+                            <input type="text" disabled value="{{ vehicle.year }}">
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>MAINTENANCE INFORMATION</legend>
+                    <div data-row-span="2">
+                        <div data-field-span="1">
+                            <label>Maintenance Type</label>
+                            {{ form.maintenance_type() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>Maintenance Time</label>
+                            {{ form.date_time() }}
+                        </div>
+                    </div>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label>Description</label>
+                            {{ form.description() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <div data-row-span="3">
+                    <div data-field-span="2">
+                        <label>Note:</label>
+                        Save record to add parts.
+                    </div>
+                    <div data-field-span="1">
+                        <button type="submit" class="btn gridform-button">Save</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+{% endblock page_content %}
+{% block scripts %}
+    {{ super() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.min.js"
+            integrity="sha256-44TeE1bzEP4BfpL6Wb05CVgLDKN6OzOAI79XNMPR4Bs=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename="gridforms/gridforms.js") }}"></script>
+    <script>
+        const maintenance_date = flatpickr("#date_time", {
+            enableTime: true,
+            time_24hr: true
+        });
+    </script>
+{% endblock scripts %}

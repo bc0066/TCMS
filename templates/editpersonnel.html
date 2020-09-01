@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block title %}Personnel Record - {{ person.fullname }}{% endblock title %}
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='gridforms/gridforms.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.css"
+          integrity="sha256-tUFg4y6qj4WTN1LzL83dCuIJwr/+Vhph/nf82gD/X2w=" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='hsimp.css') }}">
+{% endblock styles %}
+
+
+{% block page_content %}
+    <div class="modal fade" id="setPasswordModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <p class="h1 d-print-none mt-3">Personnel</p>
+    </div>
+    <div class="container">
+        <form action="" method="POST" class="grid-form">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <legend>PERSONNEL RECORD</legend>
+                <div data-row-span="1">
+                    <div data-field-span="1">
+                        <label>PERSONNEL ID</label>
+                        <input type="text" value="&#8470; {{ person.padded_id }}" disabled>
+                    </div>
+                </div>
+                <fieldset>
+                    <legend>NAME</legend>
+                    <div data-row-span="3">
+                        <div data-field-span="1">
+                            <label>First Name</label>
+                            {{ form.first_name() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>Middle Name</label>
+                            {{ form.middle_i() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>Last Name</label>
+                            {{ form.last_name() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>EMPLOYEE RECORD</legend>
+                    <div data-row-span="2">
+                        <div data-field-span="1">
+                            <label>Job Title</label>
+                            {{ form.position() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>Employee Classification</label>
+                            <!--<select name="employee-classification" form="personnelform">
+                                <option value="back-office">Back Office</option>
+                                <option value="shipping-manager">Shipping Manager</option>
+                                <option value="maintenance-worker">Maintenance</option>
+                                <option value="driver">Driver</option>
+                            </select>-->
+                            {{ form.category() }}
+                        </div>
+                    </div>
+                    <div data-row-span="4">
+                        <div data-field-span="1">
+                            <label>Start Date</label>
+                            {{ form.start_date() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>End Date</label>
+                            {{ form.end_date(data_toggle="tooltip", title="Click to clear") }}
+                        </div>
+                        <!--
+                        <div data-field-span="1">
+                            <label>Years with Company</label>
+                            <input type="text" name="years" disabled>
+                        </div>
+                        -->
+                        <div data-field-span="2">
+                            <label>Salary (in USD)</label>
+                            {{ form.rate() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>CONTACT INFORMATION</legend>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label>Address</label>
+                            {{ form.address() }}
+                        </div>
+                    </div>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label>Telephone</label>
+                            {{ form.phone() }}
+                        </div>
+                    </div>
+                </fieldset>
+                {% if person.category == 3 %}
+                <fieldset>
+                    <legend>Driver Assignments</legend>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label>Assignment</label>
+                            <ul>
+                            {% for shipment in driver_shipments %}
+                                <li>
+                                    <a href="{{ url_for('shipmentpage', shipment_id=shipment.ship_id) }}">
+                                        Shipment {{ shipment.ship_id }} - Vehicle {{ shipment.vehicle_id }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </fieldset>
+                {% endif %}
+                <fieldset>
+                    <legend>ACCOUNT</legend>
+                    <div data-row-span="3">
+                        <div data-field-span="1">
+                            <label>Account Status</label>
+                            <!--<select name="account-status" form="personnelform">
+                                <option value="active">Active</option>
+                                <option value="disabled">Disabled</option>
+                            </select>-->
+                            <input value="Active" type="text" id="accountstatus" disabled>
+                        </div>
+                        <div data-field-span="1">
+                            <button type="button" class="gridform-button btn btn-info" id="setpasswordbutton">SET
+                                PASSWORD
+                            </button>
+                        </div>
+                        <div data-field-span="1">
+                            <button type="submit" class="gridform-button btn btn-primary">SAVE</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </fieldset>
+        </form>
+    </div>
+{% endblock page_content %}
+{% block scripts %}
+    {{ super() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.min.js"
+            integrity="sha256-44TeE1bzEP4BfpL6Wb05CVgLDKN6OzOAI79XNMPR4Bs=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename="gridforms/gridforms.js") }}"></script>
+    <script src="{{ url_for('static', filename="hsimp.min.js") }}"></script>
+    <script>
+        const startdate = flatpickr("#start_date", {
+            onChange: function (selectedDates, dateStr, instance) {
+                enddate.set('minDate', dateStr);
+            }
+        });
+        const enddate = flatpickr("#end_date", {
+            onChange: function (selectedDates, dateStr, instance) {
+                if (selectedDates != null) {
+                    $("#accountstatus").val("Disabled");
+                }
+            }
+        });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+        $("#end_date").click(function () {
+            enddate.clear()
+            $("#accountstatus").val("Active");
+        });
+        $(document).ready(function () {
+            $("#start_date").val("{{ start_date }}");
+            $("#end_date").val("{{ end_date }}");
+
+            if ("{{ end_date }}" !== "") {
+                $("#accountstatus").val("Disabled");
+            } else {
+                $("#accountstatus").val("Active");
+            }
+
+            $("#setpasswordbutton").click(function () {
+                var url = "{{ url_for('setpassword', employee_id=person.employee_id) }}";
+                $.get(url, function (data) {
+                    $("#setPasswordModal .modal-content").html(data);
+                    $("#setPasswordModal").modal();
+
+                    $("#passwordButton").click(function (event) {
+                        event.preventDefault()
+                        $.post(url, data = $('#passwordForm').serialize(), function (data) {
+                            if (data.status == 'ok') {
+                                $('#setPasswordModal').modal('hide');
+                                location.reload();
+                            } else {
+                                $('#setPasswordModal .modal-content').html(data)
+                            }
+                        });
+                    })
+                });
+            });
+        });
+    </script>
+{% endblock scripts %}
+
+
+

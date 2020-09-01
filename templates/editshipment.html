@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+{% block title %}Shipment - Edit{% endblock title %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/selectize@0.12.6/dist/css/selectize.css"
+          integrity="sha256-PaAZL3VjvuBsQSngzjA8dTdYa2mU88xmjd0vw8biXfg=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/selectize@0.12.6/dist/css/selectize.default.css"
+          integrity="sha256-08CTv29fptANK7CVsvnTZiZZYF9FHc+qtFzn/3cm4S4=" crossorigin="anonymous">
+    <link href="{{ url_for('static', filename='gridforms/gridforms.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.css"
+          integrity="sha256-tUFg4y6qj4WTN1LzL83dCuIJwr/+Vhph/nf82gD/X2w=" crossorigin="anonymous">
+{% endblock styles %}
+
+
+{% block page_content %}
+    <div class="container">
+        <p class="h1 d-print-none mt-3">Shipments</p>
+    </div>
+    <div class="modal fade" id="confirmShipmentModal" tabindex="-1" role="dialog"
+         aria-labelledby="Shipment Confirmation" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Shipment Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Do you want to
+                        {% if shipment.arrival_status %}
+                            cancel confirmation
+                        {% else %}
+                            confirm shipment?
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal" araia-label="close">No</button>
+                    <button type="button" class="btn btn-warning" id="toggleShipmentStatus">
+                        {% if shipment.arrival_status %}
+                            Cancel Confirmation
+                        {% else %}
+                            Confirm Shipment
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <form action="" method="POST" class="grid-form">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <legend>SHIPMENT RECORD</legend>
+                <div data-row-span="3">
+                    <div data-field-span="1">
+                        <label>Shipment No.</label>
+                        <input type="text" value="&#8470; {{ shipment.padded_id }}" disabled>
+                    </div>
+                    <div data-field-span="1">
+                        <label>Shipment Type</label>
+                        <input type="text"
+                               value="{% if shipment.shipment_type %}Outgoing ↗{% else %}Incoming ↙{% endif %}"
+                               disabled>
+                    </div>
+                    <div data-field-span="1">
+                        <label>Shipment Status</label>
+                        <input type="text" disabled
+                               value={% if shipment.arrival_status %}"Confirmed: {{ shipment.friendly_confirmation }}">
+                               {% else %}"In Transit">{% endif %}
+                    </div>
+                </div>
+                <fieldset>
+                    <legend>SOURCE</legend>
+                    <div data-row-span="2">
+                        <div data-field-span="1">
+                            <label>Source Company</label>
+                            {{ form.source_company() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>Departure</label>
+{#                            <input type="text" id="v-departure" required>#}
+                            {{ form.depart_time(class_='') }}
+                        </div>
+                    </div>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label>Source Address</label>
+                            {{ form.source_address() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>DESTINATION</legend>
+                    <div data-row-span="2">
+                        <div data-field-span="1">
+                            <label>Destination Company</label>
+                            {{ form.destination_company() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>Estimated Arrival</label>
+{#                            <input type="text" id="v-eta" required>#}
+{#                            {{ form.est_time_arrival(class_='d-none') }}#}
+                            {{ form.est_time_arrival(class_='') }}
+                        </div>
+                    </div>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            <label>Destination Address</label>
+                            {{ form.destination_address() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>ASSIGNMENT</legend>
+                    <div data-row-span="5">
+                        <div data-field-span="1">
+                            <label>Vehicle №</label>
+                            {{ form.vehicle_id(class_='selectizeVehicle') }}
+                        </div>
+                        <div data-field-span="4">
+                            <label>Driver(s)</label>
+                            {{ form.drivers(class_='selectizeDrivers') }}
+                        </div>
+                    </div>
+                </fieldset>
+                <div data-row-span="3">
+                    <div data-field-span="1">
+                        <buttion type="button" class="btn btn-secondary gridform-button" data-toggle="modal"
+                                 data-target="#confirmShipmentModal">
+                            {% if shipment.arrival_status %}
+                                Cancel Confirmation
+                            {% else %}
+                                Confirm Shipment
+                            {% endif %}
+                        </buttion>
+                    </div>
+                    <div data-field-span="1">
+                        <a class="btn btn-primary gridform-button"
+                           href="{% if shipment.shipment_type %}
+                           {{ url_for('shipmentmanifest', shipment_id = shipment.ship_id) }}
+                        {% else %}
+                           {{ url_for('shipmentpurchaseorder', shipment_id = shipment.ship_id) }}
+                        {% endif %}">
+                            {% if shipment.shipment_type %}
+                                Manifest
+                            {% else %}
+                                Purchase Order
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div data-field-span="1">
+                        <button type="submit" id="submitForm" class="gridform-button btn btn-info">SAVE
+                        </button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+{% endblock page_content %}
+{% block scripts %}
+    {{ super() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.min.js"
+            integrity="sha256-44TeE1bzEP4BfpL6Wb05CVgLDKN6OzOAI79XNMPR4Bs=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/selectize@0.12.6/dist/js/standalone/selectize.min.js"
+            integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename="gridforms/gridforms.js") }}"></script>
+    <script>
+        {#const departuretime = flatpickr("#v-departure", {#}
+        const departuretime = flatpickr("#depart_time", {
+            enableTime: true,
+            time_24hr: true,
+            onChange: function (dateStr, selectedDates) {
+                estarrivaltime.set('minDate', selectedDates);
+                {#$('#depart_time').val(selectedDates);#}
+            }
+        });
+        {#const estarrivaltime = flatpickr("#v-eta", {#}
+        const estarrivaltime = flatpickr("#est_time_arrival", {
+            enableTime: true,
+            time_24hr: true,
+            onClose: function (dateStr, selectedDates) {
+            },
+            onChange: function (dateStr, selectedDates) {
+                {#$('#est_time_arrival').val(selectedDates);#}
+            }
+        });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+        const $driversSelect = $('#drivers').selectize({
+            persist: false,
+            maxItems: null,
+            valueField: 'ident',
+            labelField: 'name',
+            searchField: ['name', 'ident'],
+            render: {
+                item: function (item, escape) {
+                    return '<div>' +
+                        (item.name ? '<span class="driverName">' + escape(item.name) + '</span>' : '') +
+                        (item.ident ? ' (<span class="driverID">' + escape(item.ident) + '</span>)' : '') +
+                        '</div>';
+                },
+                option: function (item, escape) {
+                    var label = item.name || item.ident;
+                    var caption = item.name ? item.ident : null;
+                    return '<div>' +
+                        '<span class="SelectizeLabel">' + escape(label) + '</span>' +
+                        (caption ? ' (<span class="SelectizeCaption">' + escape(caption) + '</span>)' : '') +
+                        '</div>';
+                }
+            }
+        });
+        const driversSelectize = $driversSelect[0].selectize;
+        driversSelectize.setValue({{ drivers | safe }}, false);
+        const $vid = $('#vehicle_id').selectize({
+            valueField: 'vid',
+            labelField: 'name',
+            searchField: ['name', 'vid'],
+            render: {
+                item: function (item, escape) {
+                    return '<div>' +
+                        (item.vid ? ' <span class="vehicleID">' + escape(item.vid) + '</span>' : '') +
+                        '</div>';
+                },
+                option: function (item, escape) {
+                    var label = item.name || item.vid;
+                    var caption = item.name ? item.vid : null;
+                    return '<div>' +
+                        '<span class="SelectizeLabel">' + escape(label) + '</span>' +
+                        (caption ? ' (<span class="SelectizeCaption">' + escape(caption) + '</span>)' : '') +
+                        '</div>';
+                }
+            }
+        });
+        const vidSelectize = $vid[0].selectize;
+        vidSelectize.setValue({{ vehicle_id | safe }});
+        $(document).ready(function () {
+            $("#toggleShipmentStatus").click(function () {
+                $.post(window.location.href, 'action=toggleShipmentStatus', function () {
+                    location.replace(window.location);
+                })
+            });
+            driversSelectize.setValue({{ drivers | safe }}, false);
+        })
+    </script>
+{% endblock scripts %}
+
+
+

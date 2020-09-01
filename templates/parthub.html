@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Parts{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='table.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.css"
+          integrity="sha256-tUFg4y6qj4WTN1LzL83dCuIJwr/+Vhph/nf82gD/X2w=" crossorigin="anonymous">
+{% endblock styles %}
+
+{% block page_content %}
+    <div class="container-fluid">
+        <p class="h1 mt-3">Maintenance</p>
+        <a class="ml-1 mr-1" href="{{ url_for('equipmenthub') }}">Equipment</a>&#124;
+        <span class="ml-1 mr-1">Parts</span>&#124;
+        <a class="ml-1 mr-1" href="{{ url_for('maintenancehub') }}">Maintenance Records</a>
+    </div>
+    <div class="container-fluid mb-2">
+        <a class="btn btn-secondary text-light d-print-none d-block d-lg-none mb-3"
+           href="{{ url_for('createparts') }}">New Part</a>
+        <div class="bg-light mb-3 d-print-none">
+            <a class="btn btn-secondary float-right text-light d-none d-xl-block"
+               href="{{ url_for('createparts') }}">New Part</a>
+            <a class="btn btn-secondary float-right text-light d-none d-lg-block d-xl-none"
+               href="{{ url_for('createparts') }}">&#43;</a>
+
+        </div>
+    </div>
+    <div class="container-fluid shipment-table mt-2">
+        {{ parttable|safe }}
+    </div>
+{% endblock page_content %}
+{% block scripts %}
+    {{ super() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.min.js"
+            integrity="sha256-44TeE1bzEP4BfpL6Wb05CVgLDKN6OzOAI79XNMPR4Bs=" crossorigin="anonymous"></script>
+    <script>
+        const daterange = flatpickr("#date_range", {
+            mode: "range",
+            onChange: function (dateStr, selectedDates) {
+                var dateArr = [];
+                if (selectedDates.includes(" to ")) {
+                    dateArr = selectedDates.split(" to ", 2);
+                } else {
+                    dateArr = [selectedDates, selectedDates];
+                }
+                $("#range_start").val(dateArr[0]);
+                $("#range_end").val(dateArr[1]);
+            }
+        });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+{% endblock scripts %}

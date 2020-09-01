@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Outgoing Shipment Report{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='table.css') }}" rel="stylesheet">
+{% endblock styles %}
+
+{% block page_content %}
+	<div class="container-fluid">
+        <p class="h1 mt-3">Outgoing Shipment Report</p>
+        <form method="get" action="{{ url_for('generateoutgoingreport') }}">
+            <button>Generate Shipment Report</button>
+        </form> 
+    </div>
+    <div>
+    	<table class="table">
+    		<thead>
+    			<th>Shipment ID</th>
+    			<th>Source Company</th>
+    			<th>Destination Company</th>
+    			<th>Depart Time</th>
+    			<th>Estimated Arrival Time</th>
+    			<th>Confirmed?</th>
+    			<th>Shipment Type </th>
+    		</thead>
+    		<tbody>
+    			{% for shipment in shipments %}
+                <tr>
+    				<td>{{ shipment.ship_id }}</td>
+    				<td>{{ shipment.source_company }}</td>
+    				<td>{{ shipment.destination_company }}</td>
+                    <td>{{ shipment.depart_time }}</td>
+    				<td>{{ shipment.est_time_arrival }}</td>
+    				<td>{{ shipment.confirmation }}</td>
+    				<td>{{ shipment.shipment_type }}</td>
+                </tr>
+				{% endfor %}
+	</div>
+{% endblock page_content %}

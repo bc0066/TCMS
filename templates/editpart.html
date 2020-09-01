@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Personnel - Edit{% endblock title %}
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='gridforms/gridforms.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.css"
+          integrity="sha256-tUFg4y6qj4WTN1LzL83dCuIJwr/+Vhph/nf82gD/X2w=" crossorigin="anonymous">
+{% endblock styles %}
+
+
+{% block page_content %}
+    <div class="container">
+        <p class="h1 d-print-none mt-3">Parts</p>
+    </div>
+    <div class="container">
+        <form action="" method="POST" class="grid-form">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <legend>PART RECORD</legend>
+                <fieldset>
+                    <legend>PART INFORMATION</legend>
+                </fieldset>
+                <div data-row-span="1">
+                    <div data-field-span="1">
+                        <label>PART ID</label>
+                        <input type="text" value="&#8470; {{ parts.padded_id }}" disabled>
+                    </div>
+                </div>
+                <fieldset>
+                    <legend>BRAND</legend>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            {{ form.brand() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>DESCRIPTION</legend>
+                    <div data-row-span="1">
+                        <div data-field-span="1">
+                            {{ form.description() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>INVENTORY INFORMATION</legend>
+                    <div data-row-span="3">
+                        <div data-field-span="1">
+                            <label>INVENTORY</label>
+                            {{ form.inventory() }}
+                        </div>
+{#                        <div data-field-span="3">#}
+{#                            <label>SOURCE</label>#}
+{#                            {{ parts.source }}#}
+{#                        </div>#}
+                        <div data-field-span="1">
+                            <label>PRICE</label>
+                            {{ form.cost() }}
+                        </div>
+                        <div data-field-span="1">
+                            <label>SPECIAL ORDERED?</label>
+                            {{ form.special_order() }}
+                        </div>
+                    </div>
+                </fieldset>
+                <div data-row-span="4">
+                    <div data-field-span="3">
+                    </div>
+                    <div data-field-span="1">
+                        <button type="submit" class="gridform-button btn btn-primary">SAVE</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+{% endblock page_content %}
+{% block scripts %}
+    {{ super() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.5.2/dist/flatpickr.min.js"
+            integrity="sha256-44TeE1bzEP4BfpL6Wb05CVgLDKN6OzOAI79XNMPR4Bs=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename="gridforms/gridforms.js") }}"></script>
+    <script>
+        const startdate = flatpickr("#start_date", {
+            onChange: function (selectedDates, dateStr, instance) {
+                enddate.set('minDate', dateStr);
+            }
+        });
+        const enddate = flatpickr("#end_date", {
+            onClose: function (selectedDates) {
+                if (selectedDates == null) {
+                    enddate.clear();
+                }
+            },
+            onChange: function (selectedDates, dateStr, instance) {
+                if (selectedDates != null) {
+                    $("#accountstatus").val("Disabled");
+                }
+            }
+        });
+        $("#end_date").click(function () {
+            enddate.clear()
+            $("#accountstatus").val("Active");
+        });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+{% endblock scripts %}
+
+
+

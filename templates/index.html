@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% set active_page = "dashboard" %}
+{% block title %}TCMS Dashboard{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block page_content %}
+    <div class="container-fluid mt-3">
+        <div class="row">
+            {% if user.category == 3 %}
+                <div class="col-auto mb-3">
+                    <div class="card" style="width: 25rem; height: 15rem">
+                        <svg class="card-img-top" width="100%" height="6rem"
+                             xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"
+                             role="img" aria-label="Placeholder: Card image"><title>Placeholder</title>
+                            <rect width="100%" height="100%" fill="#333"></rect>
+                        </svg>
+                        <div class="card-img-overlay nounderline">
+                            <a href="{{ url_for('myshipments') }}" class="nounderline"><h5
+                                    class="card-title display-4 mb-0 mt-1 text-right text-light">my Shipments</h5></a>
+                            <div class="card-body text-right">
+                            <table style="height: 7rem; width: 100%">
+                                <tbody>
+                                <tr>
+                                    <td class="align-bottom h4"><a href="{{ url_for('myshipments') }}?filter=incoming">Incoming
+                                        Shipments
+                                        &gt;</a></td>
+                                </tr>
+                                <tr style="height: 1.25rem;">
+                                    <td class="align-bottom h4"><a href="{{ url_for('myshipments') }}?filter=outgoing">Outgoing
+                                        Shipments
+                                        &gt;</a></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if user.category in [0,1] %}
+                <div class="col-auto mb-3">
+                    <div class="card" style="width: 25rem; height: 15rem">
+                        <svg class="card-img-top" width="100%" height="6rem"
+                             xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"
+                             role="img" aria-label="Placeholder: Card image"><title>Placeholder</title>
+                            <rect width="100%" height="100%" fill="#333"></rect>
+                        </svg>
+                        <div class="card-img-overlay nounderline">
+                            <a href="{{ url_for('shipmentshub') }}" class="nounderline"><h5
+                                    class="card-title display-4 mb-0 mt-1 text-right text-light">Shipments</h5></a>
+                            <div class="card-body text-right">
+                                <table style="height: 7rem; width: 100%">
+                                    <tbody>
+                                    <tr>
+                                        <td class="align-bottom h4"><a href="{{ url_for('shipmentshub') }}?filter=incoming">Incoming
+                                            Shipments
+                                            &gt;</a></td>
+                                    </tr>
+                                    <tr style="height: 1.25rem;">
+                                        <td class="align-bottom h4"><a href="{{ url_for('shipmentshub') }}?filter=outgoing">Outgoing
+                                            Shipments
+                                            &gt;</a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if user.category in [0,1,2] %}
+                <div class="col-auto mb-3">
+                    <div class="card" style="width: 25rem; height: 15rem">
+                        <svg class="card-img-top" width="100%" height="6rem"
+                             xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"
+                             role="img" aria-label="Placeholder: Card image"><title>Placeholder</title>
+                            <rect width="100%" height="100%" fill="#333"></rect>
+                        </svg>
+                        <div class="card-img-overlay nounderline">
+                            <a href="{{ url_for('maintenancehub') }}" class="nounderline"><h5
+                                    class="card-title display-4 mb-0 mt-1 text-right text-light">Maintenance</h5></a>
+                            <div class="card-body text-right">
+                                <table style="height: 7rem; width: 100%">
+                                    <tbody>
+                                    <tr>
+                                        <td class="align-bottom h4"><a href="{{ url_for('equipmenthub') }}">Equipment
+                                            &gt;</a></td>
+                                    </tr>
+                                    <tr style="height: 1.25rem;">
+                                        <td class="align-bottom h4"><a href="{{ url_for('parthub') }}">Parts &gt;</a>
+                                        </td>
+                                    </tr>
+                                    <tr style="height: 1.25rem;">
+                                        <td class="align-bottom h4"><a href="{{ url_for('maintenancehub') }}">Maintenance
+                                            &gt;</a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if user.category == 0 %}
+                <div class="col-auto mb-3">
+                    <div class="card" style="width: 25rem; height: 15rem">
+                        <svg class="card-img-top" width="100%" height="6rem"
+                             xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"
+                             role="img" aria-label="Placeholder: Card image"><title>Placeholder</title>
+                            <rect width="100%" height="100%" fill="#333"></rect>
+                        </svg>
+                        <div class="card-img-overlay nounderline">
+                            <a href="{{ url_for('personnelhub') }}" class="nounderline"><h5
+                                    class="card-title display-4 mb-0 mt-1 text-right text-light">Personnel</h5></a>
+                             <div class="card-body text-right">
+                                <table style="height: 7rem; width: 100%">
+                                    <tbody>
+                                    <tr style="height: 1.25rem;">
+                                        <td class="align-bottom h4"><a href="{{ url_for('personnelhub') }}">Personnel
+                                            &gt;</a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+{% endblock %}

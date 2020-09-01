@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Personnel Hub{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='table.css') }}" rel="stylesheet">
+{% endblock styles %}
+
+{% block page_content %}
+    <div class="container">
+        <p class="h1 mt-3">Personnel</p>
+    </div>
+    <div class="container">
+        <a class="btn btn-secondary text-light d-print-none d-block d-lg-none mb-3"
+           href="{{ url_for('createpersonnel') }}">New Personnel Record</a>
+        <div class="bg-light mb-3 d-print-none">
+            <a class="btn btn-secondary float-right text-light d-none d-xl-block"
+               href="{{ url_for('createpersonnel') }}">New Personnel Record</a>
+            <a class="btn btn-secondary float-right text-light d-none d-lg-block d-xl-none"
+               href="{{ url_for('createpersonnel') }}">&#43;</a>
+{#            <form class="form-inline text">#}
+{#                <label class="ml-1 h5 mr-1">FILTERS:</label>#}
+{#                <div class="form-group" data-toggle="tooltip" title="Not yet implemented.">#}
+{#                    <label class="ml-1 mr-1">Status</label>#}
+{#                    <select disabled class="form-control mr-2" id="status_select">#}
+{#                        <option>All</option>#}
+{#                        <option>Active</option>#}
+{#                        <option>Inactive</option>#}
+{#                    </select>#}
+{#                </div>#}
+{#                <div class="form-group" data-toggle="tooltip" title="Not yet implemented.">#}
+{#                    <label class="ml-1 mr-1">Type</label>#}
+{#                    <select disabled class="form-control mr-2" id="status_select">#}
+{#                        <option>All</option>#}
+{#                        <option>Driver</option>#}
+{#                        <option>Maintenance</option>#}
+{#                        <option>Shipping Mgr.</option>#}
+{#                        <option>Back Office</option>#}
+{#                    </select>#}
+{#                </div>#}
+{#                <div class="form-group" data-toggle="tooltip" title="Not yet implemented.">#}
+{#                    <label class="mr-1">Surname</label>#}
+{#                    <input disabled type="text" id="surname_search" class="form-control mr-2" placeholder="Surname">#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                    <button type="button" class="btn btn-secondary text-light d-sm-block" disabled data-toggle="tooltip"#}
+{#                            title="Not yet implemented.">#}
+{#                        Filter#}
+{#                    </button>#}
+{#                </div>#}
+{#            </form>#}
+        </div>
+        {{ personneltable }}
+    </div>
+{% endblock page_content %}
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+{% endblock scripts %}
